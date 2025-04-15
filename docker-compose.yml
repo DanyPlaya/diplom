@@ -1,0 +1,34 @@
+
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - ml-service
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: postgis/postgis
+    environment:
+      POSTGRES_DB: shiptracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  ml-service:
+    build: ./ml-service
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ml-service:/app
+
+volumes:
+  pgdata:

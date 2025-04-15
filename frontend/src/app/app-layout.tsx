@@ -1,0 +1,23 @@
+import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
+import { Header } from "@/widgets/header";
+import { AppSidebar } from "@/widgets/sidebar";
+import { Outlet } from "react-router";
+import { ThemeProvider } from "./theme-provider/theme-provider";
+
+export const Layout = () => {
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <SidebarProvider>
+        <div className="flex w-full h-screen">
+          <AppSidebar />
+          <SidebarInset className="flex-grow ">
+            <main className="h-full ">
+              <Header />
+              <Outlet />
+            </main>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    </ThemeProvider>
+  );
+};
