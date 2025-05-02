@@ -1,7 +1,7 @@
-import { Main } from "@/pages/main";
 import { routes } from "@/shared";
 import { createBrowserRouter } from "react-router";
 import { Layout } from "../app-layout";
+import { MainPage } from "@/pages/main";
 
 export const appRouter = createBrowserRouter([
   {
@@ -9,7 +9,7 @@ export const appRouter = createBrowserRouter([
     children: [
       {
         path: routes.main,
-        element: <Main />,
+        element: <MainPage />,
       },
     ],
   },
