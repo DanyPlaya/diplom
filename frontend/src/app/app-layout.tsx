@@ -8,8 +8,8 @@ export const Layout = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider>
+        <AppSidebar />
         <div className="flex w-full h-screen">
-          <AppSidebar />
           <SidebarInset className="flex-grow ">
             <main className="h-full ">
               <Header />

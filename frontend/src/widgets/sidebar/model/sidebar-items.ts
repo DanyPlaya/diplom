@@ -1,49 +1,27 @@
-import { ReactNode } from "react";
-
+import { routes } from "@/shared";
+import {
+  BarChart3,
+  Bell,
+  Clock,
+  FileText,
+  LucideIcon,
+  Map,
+  Settings,
+  Sparkles,
+  User,
+} from "lucide-react";
 type SidebarItems = {
-  title: string;
-  icon: ReactNode;
+  label: string;
+  icon: LucideIcon;
   path: string;
 };
 export const sidebarItems: SidebarItems[] = [
-  {
-    title: "Мониторинг",
-    icon: "map", // Icons.map
-    path: "/dashboard",
-  },
-  {
-    title: "Аналитика",
-    icon: "chart", // Icons.chart
-    path: "/analytics",
-  },
-  {
-    title: "Прогнозы",
-    icon: "brain", // Icons.brain
-    path: "/predictions",
-  },
-  {
-    title: "Уведомления",
-    icon: "bell", // Icons.bell
-    path: "/alerts",
-  },
-  {
-    title: "История",
-    icon: "history", // Icons.history
-    path: "/history",
-  },
-  {
-    title: "Документация",
-    icon: "bookOpen", // Icons.bookOpen
-    path: "/docs",
-  },
-  {
-    title: "Настройки",
-    icon: "settings", // Icons.settings
-    path: "/settings",
-  },
-  {
-    title: "Профиль",
-    icon: "user", // Icons.user
-    path: "/profile",
-  },
+  { icon: Map, label: "Мониторинг", path: routes.monitoring },
+  { icon: BarChart3, label: "Аналитика", path: routes.analytics },
+  { icon: Sparkles, label: "Прогнозы", path: routes.prediction },
+  { icon: Bell, label: "Уведомления", path: routes.alerts },
+  { icon: Clock, label: "История", path: routes.history },
+  { icon: FileText, label: "Документация", path: routes.docs },
+  { icon: Settings, label: "Настройки", path: routes.settings },
+  { icon: User, label: "Профиль", path: routes.profile },
 ];

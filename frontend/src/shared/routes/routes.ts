@@ -1,11 +1,12 @@
 export const routes = {
   main: "/",
   ais: "/ais",
-  dashboard: "/dashboard",
+  monitoring: "/monitoring",
   analytics: "/analytics",
   alerts: "/alerts",
   history: "/history",
   docs: "/docs",
   settings: "/settings",
   profile: "/profile",
+  prediction: "/prediction",
 };
