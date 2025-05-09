@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 
 export const Header = () => {
   return (
-    <header className="p-6 w-full flex items-center justify-between">
+    <header className="p-3 w-full flex items-center justify-between">
       <SidebarTrigger>
         <Menu className="h-5 w-5" />
       </SidebarTrigger>

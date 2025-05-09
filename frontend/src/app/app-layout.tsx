@@ -11,8 +11,8 @@ export const Layout = () => {
         <AppSidebar />
         <div className="flex w-full h-screen">
           <SidebarInset className="flex-grow ">
+            <Header />
             <main className="h-full ">
-              <Header />
               <Outlet />
             </main>
           </SidebarInset>
