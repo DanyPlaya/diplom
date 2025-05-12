@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import SessionLocal
-from app.schemas import AISDataOut
-from app import models
+from ..database import SessionLocal, Base, engine
+from ..schemas import AISDataOut
+from ..crud import get_ais
 
-router = APIRouter()  # 💡 вот он!
+# Создаём таблицы, если их ещё нет
+Base.metadata.create_all(bind=engine)
+
+router = APIRouter(prefix="/api/ais", tags=["AIS"])
 
 def get_db():
     db = SessionLocal()
@@ -14,21 +17,5 @@ def get_db():
         db.close()
 
 @router.get("/", response_model=list[AISDataOut])
-def read_ais_data(mmsi: str = None, db: Session = Depends(get_db)):
-    query = db.query(
-        models.Vessel.mmsi,
-        models.Vessel.name,
-        models.Vessel.imo,
-        models.Vessel.destination,
-        models.AISData.timestamp,
-        models.AISData.latitude,
-        models.AISData.longitude,
-        models.AISData.sog,
-        models.AISData.cog,
-        models.AISData.heading,
-    ).join(models.Vessel, models.Vessel.id == models.AISData.vessel_id)
-
-    if mmsi:
-        query = query.filter(models.Vessel.mmsi == mmsi)
-
-    return query.order_by(models.AISData.timestamp).all()
+def read_ais(mmsi: str | None = None, db: Session = Depends(get_db)):
+    return get_ais(db, mmsi)

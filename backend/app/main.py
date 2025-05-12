@@ -1,17 +1,23 @@
+# backend/app/main.py
+import asyncio, threading
 from fastapi import FastAPI
-from app.routers import ais
-from app.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import predict
-app = FastAPI()
+from app.routers import ws, ais  # ais — ваш HTTP-API
+from app.ais_ingestor import consume_aisstream
+
+app = FastAPI(title="ShipTracker")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # разрешаем ВСЕХ, или можно указать ['http://localhost:5173']
-    allow_credentials=True,
+    allow_origins=["http://localhost:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
-Base.metadata.create_all(bind=engine)
 
 app.include_router(ais.router, prefix="/api/ais", tags=["AIS"])
-app.include_router(predict.router, prefix="/api", tags=["Predict"])
+app.include_router(ws.router)  # WebSocket-роутер
+
+def start_ais_task():
+    asyncio.run(consume_aisstream())
+
+threading.Thread(target=start_ais_task, daemon=True).start()

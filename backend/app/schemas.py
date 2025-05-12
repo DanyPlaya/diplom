@@ -7,12 +7,9 @@ class AISDataOut(BaseModel):
     timestamp: datetime
     latitude: float
     longitude: float
-    sog: float
-    cog: float
-    heading: Optional[float] = None
-    name: Optional[str] = None
-    imo: Optional[str] = None
-    destination: Optional[str] = None
+    sog: Optional[float]
+    cog: Optional[float]
+    heading: Optional[float]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
