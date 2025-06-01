@@ -45,9 +45,9 @@ async def consume_aisstream():
             mmsi = str(pr["UserID"])
             lat  = float(pr["Latitude"])
             lon  = float(pr["Longitude"])
-            sog  = pr.get("SpeedOverGround")
-            cog  = pr.get("CourseOverGround")
-            heading = pr.get("Heading")
+            sog  = pr.get("Sog")
+            cog  = pr.get("Cog")
+            heading = pr.get("TrueHeading")
             timestamp = msg.get("Timestamp")
             try:
                 ts = datetime.fromisoformat(timestamp)

@@ -1,4 +1,3 @@
-// src/components/LiveMap.tsx
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import L from "leaflet";
@@ -25,23 +24,20 @@ export function Map() {
     max_lat: 56.0,
     max_lon: 38.0,
   });
-  console.log(data);
-  // 1) Render the React SVG to a string
-  const pointerSvg = ReactDOMServer.renderToStaticMarkup(
-    <MousePointer2 size={32} />
-  );
 
-  // 2) Create a DivIcon with that SVG
-  const customIcon = L.divIcon({
-    html: `<div style="width:32px;height:32px;">${pointerSvg}</div>`,
-    className: "leaflet-marker-icon", // you can override or leave blank
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-    tooltipAnchor: [16, -16],
-  });
+  const createRotatedIcon = (heading: number) => {
+    const pointerSvg = ReactDOMServer.renderToStaticMarkup(
+      <MousePointer2 fill="red" size={12} />
+    );
+    return L.divIcon({
+      html: `<div style="transform: rotate(${heading}deg); width:32px; height:32px;">${pointerSvg}</div>`,
+      className: "",
+      iconSize: [32, 32],
+      iconAnchor: [16, 16], // Adjust anchor point if needed
+      popupAnchor: [0, -16],
+    });
+  };
 
-  // group points by MMSI for track drawing
   const byVessel: Record<string, AISPoint[]> = {};
   points.forEach((p) => {
     (byVessel[p.mmsi] ||= []).push(p);
@@ -70,7 +66,7 @@ export function Map() {
             <React.Fragment key={mmsi}>
               {vesselPts.map((p, i) => (
                 <Marker
-                  icon={customIcon}
+                  icon={createRotatedIcon(p.heading ?? 0)}
                   key={`${mmsi}-${i}`}
                   position={[p.latitude, p.longitude]}
                 >
