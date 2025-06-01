@@ -13,9 +13,10 @@ export interface AISPoint {
 
 export function useAISSocket() {
   const [points, setPoints] = useState<AISPoint[]>([]);
-
+  const [isStopWs, setIsStopWs] = useState(false);
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/ws/ais");
+    if (isStopWs) ws.close();
 
     ws.onopen = () => console.log("WSS connected");
     ws.onmessage = (evt) => {
@@ -38,7 +39,10 @@ export function useAISSocket() {
       clearInterval(ping);
       ws.close();
     };
-  }, []);
+  }, [isStopWs]);
 
-  return points;
+  return {
+    points: points,
+    stopWs: setIsStopWs,
+  };
 }
