@@ -43,7 +43,7 @@ export function Map() {
   };
 
   const byVessel: Record<string, AISPoint[]> = {};
-  points.forEach((p) => {
+  data?.data.forEach((p) => {
     (byVessel[p.mmsi] ||= []).push(p);
   });
 

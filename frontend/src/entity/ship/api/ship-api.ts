@@ -11,11 +11,12 @@ type GetShips = {
 export const useGetShips = (props: GetShips) => {
   //   const { maxLat, maxLon, minLat, minLon } = props;
   const fetcher = async () =>
-    await baseApi.get<unknown>("/v1/ships/in_bbox", {
+    await baseApi.get("/ais/in_bbox", {
       params: props,
     });
   return useQuery({
     queryKey: ["Ships"],
     queryFn: fetcher,
+    refetchInterval: 60 * 60,
   });
 };
