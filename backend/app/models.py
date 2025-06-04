@@ -11,6 +11,7 @@ class Vessel(Base):
     name        = Column(String, nullable=True)
     imo         = Column(String, nullable=True)
     destination = Column(String, nullable=True)
+    type        = Column(Integer, nullable=True)
     ais_points  = relationship("AISData", back_populates="vessel")
 
 class AISData(Base):

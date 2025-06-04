@@ -10,6 +10,7 @@ class AISDataOut(BaseModel):
     sog: Optional[float]
     cog: Optional[float]
     heading: Optional[float]
+    ship_type: Optional[int]
 
     class Config:
         from_attributes = True

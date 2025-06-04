@@ -8,6 +8,7 @@ def get_ais(db: Session, mmsi: str | None = None):
     q = (
         db.query(
             Vessel.mmsi,
+            Vessel.type.label("ship_type"),
             AISData.timestamp,
             ST_Y(AISData.geom).label("latitude"),
             ST_X(AISData.geom).label("longitude"),
@@ -46,6 +47,7 @@ def get_latest_ais_in_bbox(
     q = (
         db.query(
             Vessel.mmsi,
+            Vessel.type.label("ship_type"),
             AISData.timestamp,
             ST_Y(AISData.geom).label("latitude"),
             ST_X(AISData.geom).label("longitude"),
