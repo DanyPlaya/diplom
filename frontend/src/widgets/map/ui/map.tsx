@@ -7,6 +7,7 @@ import {
   Marker,
   Popup,
   Polyline,
+  useMap,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { MousePointer2 } from "lucide-react";
@@ -15,9 +16,12 @@ import "react-leaflet-markercluster/styles";
 import { AISPoint, useAISSocket } from "@/shared/hooks/use-AIS-socket";
 import { MapEvents } from "../lib/map-events";
 import { useGetShips } from "@/entity/ship";
+import { cn } from "@/shared/lib/utils";
+import { MapCoord } from "@/features/map";
 
 export function Map() {
   const { points, stopWs } = useAISSocket();
+
   const { data } = useGetShips({
     min_lat: 55.0,
     min_lon: 37.0,
@@ -27,7 +31,7 @@ export function Map() {
 
   const createRotatedIcon = (heading: number) => {
     const pointerSvg = ReactDOMServer.renderToStaticMarkup(
-      <MousePointer2 fill="red" size={12} />
+      <MousePointer2 fill="red" size={16} />
     );
     return L.divIcon({
       html: `<div style="transform: rotate(${heading}deg); width:32px; height:32px;">${pointerSvg}</div>`,
@@ -45,16 +49,19 @@ export function Map() {
 
   return (
     <MapContainer
+      className={cn("markercluster-map", "h-full")}
       attributionControl={false}
       center={[59.93, 30.2]}
       zoom={8}
-      style={{ height: "100vh", width: "100%" }}
     >
       <TileLayer
         eventHandlers={{ click: (e) => console.log(e.latlng.lat) }}
         attribution="&copy; OpenStreetMap"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <div className="absolute bottom-2 left-4 z-[1000]">
+        <MapCoord />
+      </div>
       <MapEvents />
       <MarkerClusterGroup>
         {Object.entries(byVessel).map(([mmsi, vesselPts]) => {
@@ -97,8 +104,11 @@ export function Map() {
           );
         })}
       </MarkerClusterGroup>
-      <div className="z-[1000] absolute right-0" onClick={() => stopWs(true)}>
-        close
+      <div
+        className="z-[9999] cursor-pointer w-20 h-6  text-center rounded-sm top-2  bg-teal-400 absolute right-4"
+        onClick={() => stopWs(true)}
+      >
+        <span>close</span>
       </div>
     </MapContainer>
   );
