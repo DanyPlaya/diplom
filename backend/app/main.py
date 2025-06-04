@@ -2,7 +2,7 @@
 import asyncio, threading
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import ws, ais  # ais — ваш HTTP-API
+from app.routers import ais  # HTTP API
 from app.ais_ingestor import consume_aisstream
 
 app = FastAPI(title="ShipTracker")
@@ -14,8 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(ais.router, prefix="/api/ais", tags=["AIS"])
-app.include_router(ws.router)  # WebSocket-роутер
+app.include_router(ais.router, tags=["AIS"])
 
 def start_ais_task():
     asyncio.run(consume_aisstream())

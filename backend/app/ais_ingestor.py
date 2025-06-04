@@ -12,7 +12,6 @@ from sqlalchemy.orm import Session
 
 from .database import SessionLocal
 from .models import Vessel, AISData
-from .ws_manager import manager
 
 API_KEY = os.getenv("AISSTREAM_TOKEN")
 WS_URL = "wss://stream.aisstream.io/v0/stream"
@@ -78,14 +77,4 @@ async def consume_aisstream():
                 db.close()
 
             # broadcast to all connected WebSocket clients
-            broadcast_msg = {
-                "mmsi":      mmsi,
-                "timestamp": ts.isoformat(),
-                "latitude":  lat,
-                "longitude": lon,
-                "sog":       sog,
-                "cog":       cog,
-                "heading":   heading,
-            }
-            print(f"[BROADCAST] {broadcast_msg}")
-            await manager.broadcast(broadcast_msg)
+            # point was stored in DB; broadcasting disabled
