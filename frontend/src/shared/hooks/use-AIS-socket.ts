@@ -9,6 +9,7 @@ export interface AISPoint {
   sog?: number;
   cog?: number;
   heading?: number;
+  ship_type?: number;
 }
 
 export function useAISSocket() {

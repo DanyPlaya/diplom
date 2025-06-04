@@ -24,7 +24,7 @@ async def consume_aisstream():
         subscribe = {
             "APIKey": API_KEY,
             "BoundingBoxes": GLOBAL_BBOX,
-            "FilterMessageTypes": ["PositionReport"]
+            "FilterMessageTypes": ["PositionReport", "ShipStaticData"],
         }
         await ws.send(json.dumps(subscribe))
         print(f"[AIS] Subscribed: {subscribe}")
@@ -36,21 +36,41 @@ async def consume_aisstream():
             except json.JSONDecodeError:
                 continue
 
-            # only handle position reports
-            if msg.get("MessageType") != "PositionReport":
+            msg_type = msg.get("MessageType")
+            if msg_type == "ShipStaticData":
+                static = msg["Message"]["ShipStaticData"]
+                mmsi = str(static["UserID"])
+                ship_type = static.get("Type")
+
+                db: Session = SessionLocal()
+                try:
+                    vessel = db.query(Vessel).filter_by(mmsi=mmsi).first()
+                    if not vessel:
+                        vessel = Vessel(mmsi=mmsi, type=ship_type)
+                        db.add(vessel)
+                        db.commit()
+                    elif ship_type is not None and vessel.type is None:
+                        vessel.type = ship_type
+                        db.add(vessel)
+                        db.commit()
+                finally:
+                    db.close()
+                continue
+
+            if msg_type != "PositionReport":
                 continue
 
             pr = msg["Message"]["PositionReport"]
             mmsi = str(pr["UserID"])
-            lat  = float(pr["Latitude"])
-            lon  = float(pr["Longitude"])
-            sog  = pr.get("Sog")
-            cog  = pr.get("Cog")
+            lat = float(pr["Latitude"])
+            lon = float(pr["Longitude"])
+            sog = pr.get("Sog")
+            cog = pr.get("Cog")
             heading = pr.get("TrueHeading")
             timestamp = msg.get("Timestamp")
             try:
                 ts = datetime.fromisoformat(timestamp)
-            except:
+            except Exception:
                 ts = datetime.utcnow()
 
             # save to PostGIS
