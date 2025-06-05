@@ -8,3 +8,4 @@ geoalchemy2
 shapely
 python-socketio[asyncio_server]
 websockets
+alembic
