@@ -23,10 +23,10 @@ export function Map() {
   const { points, stopWs } = useAISSocket();
 
   const { data } = useGetShips({
-    min_lat: 55.0,
-    min_lon: 37.0,
-    max_lat: 56.0,
-    max_lon: 38.0,
+    min_lat: 51.0,
+    min_lon: 6.0,
+    max_lat: 60.0,
+    max_lon: 10.0,
   });
 
   const createRotatedIcon = (heading: number) => {
