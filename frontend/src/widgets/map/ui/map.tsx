@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOMServer from "react-dom/server";
 import L from "leaflet";
 import {
@@ -7,6 +7,7 @@ import {
   Marker,
   Popup,
   Polyline,
+  GeoJSON,
   useMap,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
@@ -17,10 +18,17 @@ import { AISPoint, useAISSocket } from "@/shared/hooks/use-AIS-socket";
 import { MapEvents } from "../lib/map-events";
 import { useGetShips } from "@/entity/ship";
 import { cn } from "@/shared/lib/utils";
+import { baseApi } from "@/shared/api";
 import { MapCoord } from "@/features/map";
 
 export function Map() {
   const { points, stopWs } = useAISSocket();
+
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [historyGeoJson, setHistoryGeoJson] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { data } = useGetShips({
     min_lat: 55.0,
@@ -42,6 +50,23 @@ export function Map() {
     });
   };
 
+  async function showHistory(mmsi: number) {
+    if (!start || !end) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const url = `${baseApi.defaults.baseURL}/vessel/${mmsi}/history?start=${start}&end=${end}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("failed");
+      const geo = await res.json();
+      setHistoryGeoJson(geo);
+    } catch (e) {
+      setError("Failed to load history");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const byVessel: Record<string, AISPoint[]> = {};
   data?.data.forEach((p) => {
     (byVessel[p.mmsi] ||= []).push(p);
@@ -62,6 +87,22 @@ export function Map() {
       <div className="absolute bottom-2 left-4 z-[1000]">
         <MapCoord />
       </div>
+      <div className="absolute top-2 left-2 z-[1000] bg-white p-2 rounded shadow">
+        <input
+          type="datetime-local"
+          value={start}
+          onChange={(e) => setStart(e.target.value)}
+          className="mb-1 block border"
+        />
+        <input
+          type="datetime-local"
+          value={end}
+          onChange={(e) => setEnd(e.target.value)}
+          className="mb-1 block border"
+        />
+        {loading && <span className="text-sm">Loading...</span>}
+        {error && <span className="text-sm text-red-500">{error}</span>}
+      </div>
       <MapEvents />
       <MarkerClusterGroup>
         {Object.entries(byVessel).map(([mmsi, vesselPts]) => {
@@ -76,6 +117,7 @@ export function Map() {
                   icon={createRotatedIcon(p.heading ?? 0)}
                   key={`${mmsi}-${i}`}
                   position={[p.latitude, p.longitude]}
+                  eventHandlers={{ click: () => showHistory(Number(mmsi)) }}
                 >
                   <Popup>
                     MMSI: {p.mmsi}
@@ -104,6 +146,7 @@ export function Map() {
           );
         })}
       </MarkerClusterGroup>
+      {historyGeoJson && <GeoJSON data={historyGeoJson} />}
       <div
         className="z-[9999] cursor-pointer w-20 h-6  text-center rounded-sm top-2  bg-teal-400 absolute right-4"
         onClick={() => stopWs(true)}

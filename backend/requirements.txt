@@ -9,3 +9,4 @@ shapely
 python-socketio[asyncio_server]
 websockets
 alembic
+httpx
