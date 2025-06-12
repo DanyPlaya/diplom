@@ -1,21 +1,31 @@
-
 from fastapi import FastAPI
-from pydantic import BaseModel
-from predict import predict_next_point
 
-app = FastAPI()
+from schemas import (
+    AISPoint,
+    WeatherPoint,
+    TrajectoryRequest,
+    TrajectoryResponse,
+    CollisionPair,
+    CollisionRequest,
+    CollisionResponse,
+    AnomalyRequest,
+    AnomalyResponse,
+)
+from predict import predict_trajectory, evaluate_collision_risk, detect_anomaly
 
-class AISPoint(BaseModel):
-    latitude: float
-    longitude: float
-    sog: float
-    cog: float
+app = FastAPI(title="Ship ML Service")
 
-class PredictionRequest(BaseModel):
-    history: list[AISPoint]
+@app.post("/predict/trajectory", response_model=TrajectoryResponse)
+def trajectory_endpoint(req: TrajectoryRequest):
+    pred = predict_trajectory(req)
+    return pred
 
-@app.post("/predict")
-def predict(request: PredictionRequest):
-    result = predict_next_point(request.history)
-    return {"prediction": result}
-    
+@app.post("/predict/collision", response_model=CollisionResponse)
+def collision_endpoint(req: CollisionRequest):
+    risks = evaluate_collision_risk(req)
+    return {"risks": risks}
+
+@app.post("/predict/anomaly", response_model=AnomalyResponse)
+def anomaly_endpoint(req: AnomalyRequest):
+    res = detect_anomaly(req)
+    return res

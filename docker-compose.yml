@@ -18,6 +18,10 @@ services:
       - "8000:8000"
     depends_on:
       - db
+  ml-service:
+    build: ./ml-service
+    ports:
+      - "8001:8001"
 
 volumes:
   pgdata:
