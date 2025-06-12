@@ -64,3 +64,23 @@ def get_latest_ais_in_bbox(
     )
 
     return q.all()
+
+
+def get_vessel_history(db: Session, mmsi: str, start: datetime, end: datetime):
+    """Return AIS points for vessel in given time range."""
+
+    return (
+        db.query(
+            AISData.timestamp,
+            AISData.sog,
+            AISData.cog,
+            ST_Y(AISData.geom).label("latitude"),
+            ST_X(AISData.geom).label("longitude"),
+        )
+        .join(Vessel, Vessel.id == AISData.vessel_id)
+        .filter(Vessel.mmsi == mmsi)
+        .filter(AISData.timestamp >= start)
+        .filter(AISData.timestamp <= end)
+        .order_by(AISData.timestamp)
+        .all()
+    )

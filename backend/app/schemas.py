@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Literal
 
 class AISDataOut(BaseModel):
     mmsi: str
@@ -14,3 +14,16 @@ class AISDataOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class GeoJSONFeature(BaseModel):
+    """GeoJSON Feature representing a single point."""
+
+    type: Literal["Feature"] = "Feature"
+    geometry: dict = Field(..., description="Point geometry")
+    properties: dict
+
+
+class GeoJSONFeatureCollection(BaseModel):
+    type: Literal["FeatureCollection"] = "FeatureCollection"
+    features: List[GeoJSONFeature]
