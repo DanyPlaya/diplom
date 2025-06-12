@@ -32,10 +32,12 @@ export function Map() {
   const [error, setError] = useState<string | null>(null);
 
   const { data } = useGetShips({
+
     min_lat: Number(searchParams.get("swLat")),
     min_lon: Number(searchParams.get("swLng")),
     max_lat: Number(searchParams.get("neLat")),
     max_lon: Number(searchParams.get("neLng")),
+
   });
 
   const createRotatedIcon = (heading: number, type: number) => {
