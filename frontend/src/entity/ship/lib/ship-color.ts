@@ -1,5 +1,5 @@
 const shipColors: Record<string, string> = {
-  UNKNOWN: "#777777", // серый для неизвестных
+  UNKNOWN: `#777777`, // серый для неизвестных
   PASSENGER: "#2ECC71", // зеленый
   CARGO: "#3498DB", // синий
   TANKER: "#E74C3C", // красный
