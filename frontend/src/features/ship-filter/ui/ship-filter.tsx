@@ -48,8 +48,7 @@ export function MapLayers() {
                 </SelectTrigger>
                 <SelectContent className="z-[1200]">
                   <SelectItem value="satellite">Спутниковая</SelectItem>
-                  <SelectItem value="street">Улицы</SelectItem>
-                  <SelectItem value="terrain">Рельеф</SelectItem>
+                  <SelectItem value="terrain">Морской слой</SelectItem>
                   <SelectItem value="hybrid">Гибридная</SelectItem>
                 </SelectContent>
               </Select>
