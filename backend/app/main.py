@@ -1,5 +1,5 @@
 # backend/app/main.py
-import asyncio, threading
+import asyncio
 import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,10 +37,7 @@ async def alerts_ws(ws: WebSocket):
 
 
 @app.on_event("startup")
-def on_startup():
+async def on_startup():
     Base.metadata.create_all(bind=engine)
+    asyncio.create_task(consume_aisstream())
 
-def start_ais_task():
-    asyncio.run(consume_aisstream())
-
-threading.Thread(target=start_ais_task, daemon=True).start()
