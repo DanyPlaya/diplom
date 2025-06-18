@@ -5,7 +5,7 @@ import json
 import asyncio
 import websockets
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from math import radians, cos, sin, sqrt, inf
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape

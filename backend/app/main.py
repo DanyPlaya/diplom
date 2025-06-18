@@ -29,6 +29,7 @@ app.include_router(vessel.router, tags=["Vessel"])
 @app.websocket("/ws/alerts")
 async def alerts_ws(ws: WebSocket):
     await manager.connect(ws)
+    await ws.send_json({"type": "welcome"})
     try:
         while True:
             await ws.receive_text()
