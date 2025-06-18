@@ -124,9 +124,10 @@ async def consume_aisstream():
                     db.add(vessel)
                     db.commit()
                     db.refresh(vessel)
+                vessel_id = vessel.id
 
                 point = AISData(
-                    vessel_id=vessel.id,
+                    vessel_id=vessel_id,
                     timestamp=ts,
                     sog=sog,
                     cog=cog,
@@ -148,7 +149,7 @@ async def consume_aisstream():
                             AISData.vessel_id,
                             func.max(AISData.timestamp).label("max_ts"),
                         )
-                        .filter(AISData.vessel_id != vessel.id)
+                        .filter(AISData.vessel_id != vessel_id)
                         .group_by(AISData.vessel_id)
                         .subquery()
                     )
