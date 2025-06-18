@@ -1,1 +1,1 @@
-from . import ais, vessel
+from . import ais, vessel, alerts

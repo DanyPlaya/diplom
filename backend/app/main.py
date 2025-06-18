@@ -4,7 +4,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.routers import ais, vessel  # HTTP API
+from app.routers import ais, vessel, alerts  # HTTP API
 from app.ais_ingestor import consume_aisstream
 from app.database import Base, engine
 
@@ -23,6 +23,7 @@ app.add_middleware(
 
 app.include_router(ais.router, tags=["AIS"])
 app.include_router(vessel.router, tags=["Vessel"])
+app.include_router(alerts.router, tags=["Alerts"])
 
 
 @app.on_event("startup")
